@@ -432,8 +432,11 @@ namespace Geocoding.Google
 				case "administrative_area_level_1": return GoogleAddressType.AdministrativeAreaLevel1;
 				case "administrative_area_level_2": return GoogleAddressType.AdministrativeAreaLevel2;
 				case "administrative_area_level_3": return GoogleAddressType.AdministrativeAreaLevel3;
+                case "administrative_area_level_4": return GoogleAddressType.AdministrativeAreaLevel4;
+                case "administrative_area_level_5": return GoogleAddressType.AdministrativeAreaLevel5;
 				case "colloquial_area": return GoogleAddressType.ColloquialArea;
 				case "locality": return GoogleAddressType.Locality;
+                case "ward": return GoogleAddressType.Ward;
 				case "sublocality": return GoogleAddressType.SubLocality;
 				case "neighborhood": return GoogleAddressType.Neighborhood;
 				case "premise": return GoogleAddressType.Premise;
@@ -443,8 +446,12 @@ namespace Geocoding.Google
 				case "airport": return GoogleAddressType.Airport;
 				case "park": return GoogleAddressType.Park;
 				case "point_of_interest": return GoogleAddressType.PointOfInterest;
+                case "parking": return GoogleAddressType.Parking;
 				case "post_box": return GoogleAddressType.PostBox;
 				case "street_number": return GoogleAddressType.StreetNumber;
+                case "bus_station": return GoogleAddressType.BusStation;
+                case "train_station": return GoogleAddressType.TrainStation;
+                case "transit_station": return GoogleAddressType.TransitStation;
 				case "floor": return GoogleAddressType.Floor;
 				case "room": return GoogleAddressType.Room;
 				case "postal_town": return GoogleAddressType.PostalTown;
