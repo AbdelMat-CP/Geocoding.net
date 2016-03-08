@@ -5,6 +5,8 @@ namespace Geocoding
 {
 	public interface IGeocoder
 	{
+        System.Net.IWebProxy Proxy { get; set; }
+
 		IEnumerable<Address> Geocode(string address);
 		IEnumerable<Address> Geocode(string street, string city, string state, string postalCode, string country);
 

@@ -376,7 +376,9 @@ namespace Geocoding.Google
 				bool isPartialMatch;
 				bool.TryParse((string)nav.Evaluate("string(partial_match)"), out isPartialMatch);
 
-				yield return new GoogleAddress(type, formattedAddress, components, coordinates, viewport, isPartialMatch, locationType);
+                string placeId = (string)nav.Evaluate("string(place_id)");
+
+				yield return new GoogleAddress(type, formattedAddress, components, coordinates, viewport, isPartialMatch, locationType, placeId);
 			}
 		}
 
