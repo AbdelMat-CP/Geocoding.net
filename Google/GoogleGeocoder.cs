@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -182,7 +183,7 @@ namespace Geocoding.Google
 			{
 				using (WebResponse response = request.GetResponse())
 				{
-					return ProcessWebResponse(response);
+                    return ProcessWebResponse(response, request);
 				}
 			}
 			catch (GoogleGeocodingException)
@@ -234,7 +235,7 @@ namespace Geocoding.Google
 			{
 				using (var response = (HttpWebResponse)requestState.request.EndGetResponse(result))
 				{
-					return ProcessWebResponse(response);
+                    return ProcessWebResponse(response, requestState.request);
 				}
 			}
 			catch (GoogleGeocodingException)
@@ -321,15 +322,27 @@ namespace Geocoding.Google
 			return req;
 		}
 
-		private IEnumerable<GoogleAddress> ProcessWebResponse(WebResponse response)
+        private string CleanWhitespacesInXml(string inputString)
+        {
+            return (new System.Text.RegularExpressions.Regex(@">\s*<")).Replace(inputString, "><");
+        }
+
+        private IEnumerable<GoogleAddress> ProcessWebResponse(WebResponse response, WebRequest request)
 		{
 			XPathDocument xmlDoc = LoadXmlResponse(response);
 			XPathNavigator nav = xmlDoc.CreateNavigator();
 
+            string tmp = CleanWhitespacesInXml(nav.InnerXml);
+
 			GoogleStatus status = EvaluateStatus((string)nav.Evaluate("string(/GeocodeResponse/status)"));
 
-			if (status != GoogleStatus.Ok && status != GoogleStatus.ZeroResults)
-				throw new GoogleGeocodingException(status);
+            if (status != GoogleStatus.Ok && status != GoogleStatus.ZeroResults)
+            {
+                Application.TraceSrc.TraceEvent(TraceEventType.Error, 0, "[Google Geocoder] : '{0}' --> response : {1}", request.RequestUri, tmp);
+                throw new GoogleGeocodingException(status);
+            }
+
+            Application.TraceSrc.TraceEvent(TraceEventType.Verbose, 0, "[Google Geocoder] : '{0}' --> response : {1}", request.RequestUri, tmp);
 
 			if (status == GoogleStatus.Ok)
 				return ParseAddresses(nav.Select("/GeocodeResponse/result")).ToArray();

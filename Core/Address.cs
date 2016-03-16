@@ -25,8 +25,8 @@ namespace Geocoding
 			get { return formattedAddress; }
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-					throw new ArgumentException("FormattedAddress is null or blank");
+                //if (string.IsNullOrWhiteSpace(value))
+                //    throw new ArgumentException("FormattedAddress is null or blank");
 
 				formattedAddress = value.Trim();
 			}
@@ -37,8 +37,8 @@ namespace Geocoding
 			get { return coordinates; }
 			set
 			{
-				if (value == null)
-					throw new ArgumentNullException("Coordinates");
+                //if (value == null)
+                //    throw new ArgumentNullException("Coordinates");
 
 				coordinates = value;
 			}
@@ -47,10 +47,10 @@ namespace Geocoding
 		public virtual string Provider
 		{
 			get { return provider; }
-			protected set
+			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-					throw new ArgumentException("Provider can not be null or blank");
+                //if (string.IsNullOrWhiteSpace(value))
+                //    throw new ArgumentException("Provider can not be null or blank");
 
 				provider = value;
 			}

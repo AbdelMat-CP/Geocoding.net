@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -116,7 +117,7 @@ namespace Geocoding.BAN
         {
             using (WebResponse response = request.GetResponse())
             {
-                return ProcessWebResponse(response);
+                return ProcessWebResponse(response, request);
             }
         }
 
@@ -148,7 +149,7 @@ namespace Geocoding.BAN
 
             using (var response = (HttpWebResponse)requestState.request.EndGetResponse(result))
             {
-                return ProcessWebResponse(response);
+                return ProcessWebResponse(response, requestState.request);
             }
         }
 
@@ -222,15 +223,20 @@ namespace Geocoding.BAN
             return req;
         }
 
-        private IEnumerable<BANAddress> ProcessWebResponse(WebResponse response)
+        private IEnumerable<BANAddress> ProcessWebResponse(WebResponse response, WebRequest request)
         {
-
+            
             HttpWebResponse httpResponse = response as HttpWebResponse;
 
-            if ((int)httpResponse.StatusCode >= 300) //error
+            if ((int)httpResponse.StatusCode >= 300)
+            {
+                Application.TraceSrc.TraceEvent(TraceEventType.Error, 0, "[BAN Geocoder] : '{0}' --> Http status code : {1}, response : {2}", request.RequestUri, httpResponse.StatusCode, httpResponse.StatusDescription);
                 throw new BANGeocodingException(httpResponse.StatusCode, httpResponse.StatusDescription);
+            }
 
             string jsonTextResponse = LoadStringResponse(httpResponse);
+
+            Application.TraceSrc.TraceEvent(TraceEventType.Verbose, 0, "[BAN Geocoder] : '{0}' --> Http status code : {1}, response : {2}", request.RequestUri, httpResponse.StatusCode, jsonTextResponse);
 
             if (!string.IsNullOrWhiteSpace(jsonTextResponse))
                 return ParseAddresses(jsonTextResponse).ToArray();
